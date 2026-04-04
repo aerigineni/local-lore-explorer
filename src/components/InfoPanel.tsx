@@ -157,7 +157,7 @@ const InfoPanel = ({
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 220 }}
-          className="fixed top-0 right-0 h-full w-full max-w-[var(--panel-width)] bg-white backdrop-blur-2xl border-l border-gray-200 z-[1000] flex flex-col shadow-2xl">
+          className="fixed top-0 right-0 h-full w-full max-w-[var(--panel-width)] bg-white backdrop-blur-2xl border-l border-gray-200 z-[1000] flex flex-col shadow-2xl"
         >
           {/* ─── Hero Image ─── */}
           <div className="relative w-full h-48 shrink-0 overflow-hidden bg-muted">
