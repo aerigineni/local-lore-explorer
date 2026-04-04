@@ -3,7 +3,7 @@ import {
   BookOpen, Newspaper, AlertTriangle, ChevronRight, ImageOff,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo, Fragment } from "react";
+import { useState, useMemo, useEffect, Fragment } from "react";
 
 interface InfoPanelProps {
   isOpen: boolean;
