@@ -104,7 +104,7 @@ function RichContent({ text }: { text: string }) {
     elements.push(
       <ul key={`ul-${elements.length}`} className="space-y-1.5 my-2">
         {bulletBuffer.map((b, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-foreground/80 leading-relaxed">
+          <li key={i} className="flex items-start gap-2 text-sm text-gray-800 leading-relaxed">
             <ChevronRight className="w-3.5 h-3.5 mt-1 shrink-0 text-primary/70" />
             <span><RichLine text={b} /></span>
           </li>
