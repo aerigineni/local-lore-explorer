@@ -55,13 +55,16 @@ const Index = () => {
       const fullName = country && name !== country ? `${name}, ${country}` : name;
       setLocationName(fullName);
 
-      const { data, error } = await supabase.functions.invoke("location-culture", {
+      const { data, error } = await supabase.functions.invoke("fetchai-agent", {
         body: { locationName: fullName, lat: clickLat, lng: clickLng },
       });
 
       if (error) throw error;
       setContent(data.content);
       setImageUrl(data.imageUrl || null);
+      if (data.source) {
+        console.log(`[CultureMap] Response source: ${data.source}`);
+      }
     } catch (err: any) {
       console.error(err);
       toast.error("Failed to fetch info about this location");
