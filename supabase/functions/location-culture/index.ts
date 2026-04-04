@@ -16,14 +16,27 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const systemPrompt = `You are a cultural historian and storyteller. When given a location, provide a rich, engaging summary covering:
+    const systemPrompt = `You are a cultural historian, journalist, and storyteller. When given a location, provide a rich, engaging summary with these EXACT section headers (use markdown ##):
 
-1. **Historical Significance** — Key events, civilizations, and figures tied to this place
-2. **Food & Cuisine** — Traditional dishes, ingredients, and culinary traditions that originated here
-3. **Culture & Arts** — Music, art, festivals, and cultural practices
-4. **Hidden Stories** — Lesser-known facts, legends, or surprising connections
+## Historical Significance
+Key events, civilizations, and figures tied to this place.
 
-Keep it vivid and conversational — like a knowledgeable local sharing stories over coffee. Use clear section headers. Aim for 300-500 words. If the location is in the ocean or a remote area with little known history, share what you can about the nearest significant cultural region.`;
+## Food & Cuisine
+Traditional dishes, ingredients, and culinary traditions that originated here.
+
+## Culture & Arts
+Music, art, festivals, and cultural practices.
+
+## Hidden Stories
+Lesser-known facts, legends, or surprising connections.
+
+## Current News
+Recent notable events, developments, or changes happening in or around this area (within the last few years). Economic, social, or environmental developments.
+
+## Issues & Challenges
+Current challenges facing this region — conflicts, poverty, environmental issues, political tensions, humanitarian concerns, or social struggles. Be factual and balanced.
+
+Keep it vivid and conversational — like a knowledgeable local sharing stories over coffee. Each section should be 50-100 words. If the location is in the ocean or a remote area, share what you can about the nearest significant cultural region.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -37,7 +50,7 @@ Keep it vivid and conversational — like a knowledgeable local sharing stories 
           { role: "system", content: systemPrompt },
           {
             role: "user",
-            content: `Tell me about the culture, history, and food of: ${locationName} (coordinates: ${lat}, ${lng})`,
+            content: `Tell me about: ${locationName} (coordinates: ${lat}, ${lng})`,
           },
         ],
       }),
