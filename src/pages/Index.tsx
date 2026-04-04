@@ -9,6 +9,7 @@ const Index = () => {
   const [panelOpen, setPanelOpen] = useState(false);
   const [locationName, setLocationName] = useState<string | null>(null);
   const [content, setContent] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
@@ -19,6 +20,7 @@ const Index = () => {
     setPanelOpen(true);
     setIsLoading(true);
     setContent(null);
+    setImageUrl(null);
     setLocationName(null);
 
     const fallbackLocationName = `${Math.abs(clickLat).toFixed(2)}°${clickLat >= 0 ? "N" : "S"}, ${Math.abs(clickLng).toFixed(2)}°${clickLng >= 0 ? "E" : "W"}`;
@@ -30,9 +32,7 @@ const Index = () => {
         const geoRes = await fetch(
           `https://nominatim.openstreetmap.org/reverse?lat=${clickLat}&lon=${clickLng}&format=json&zoom=${zoom}&accept-language=en`
         );
-
         if (!geoRes.ok) continue;
-
         const nextGeoData = await geoRes.json();
         if (!nextGeoData?.error) {
           geoData = nextGeoData;
@@ -61,6 +61,7 @@ const Index = () => {
 
       if (error) throw error;
       setContent(data.content);
+      setImageUrl(data.imageUrl || null);
     } catch (err: any) {
       console.error(err);
       toast.error("Failed to fetch info about this location");
@@ -73,10 +74,9 @@ const Index = () => {
 
   return (
     <div className="h-screen w-screen overflow-hidden relative">
-      {/* Map */}
       <MapView onLocationClick={handleLocationClick} />
 
-      {/* Top bar overlay */}
+      {/* Top bar */}
       <div className="fixed top-0 left-0 right-0 z-[999] pointer-events-none">
         <div className="flex items-center justify-between p-4 md:p-6">
           <div className="flex items-center gap-3 pointer-events-auto">
@@ -104,12 +104,12 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Info Panel */}
       <InfoPanel
         isOpen={panelOpen}
         onClose={() => setPanelOpen(false)}
         locationName={locationName}
         content={content}
+        imageUrl={imageUrl}
         isLoading={isLoading}
         lat={lat}
         lng={lng}
