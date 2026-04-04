@@ -145,14 +145,11 @@ serve(async (req) => {
     const sender = createIdentity(senderSeed);
     console.log("Sender address:", sender.address);
 
-    // Build the payload — include request_id and webhook URL so Rooted can POST back
-    const webhookUrl = `${supabaseUrl}/functions/v1/rooted-webhook`;
+    // Embed request_id in location_name (keeps original 3-field model digest)
     const payload = JSON.stringify({
-      location_name: locationName,
+      location_name: `${locationName}|||${requestId}`,
       lat,
       lng,
-      request_id: requestId,
-      webhook_url: webhookUrl,
     });
     const payloadB64 = btoa(payload);
 
