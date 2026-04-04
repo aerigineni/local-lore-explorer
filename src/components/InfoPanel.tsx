@@ -256,7 +256,7 @@ const InfoPanel = ({
                       <activeTabMeta.icon className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-display text-base font-bold text-foreground">
+                      <h3 className="font-display text-base font-bold text-gray-900">
                         {activeTabMeta.label}
                       </h3>
                       <p className="text-[11px] text-muted-foreground font-body">
