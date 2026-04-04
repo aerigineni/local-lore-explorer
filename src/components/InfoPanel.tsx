@@ -207,7 +207,7 @@ const InfoPanel = ({
           </div>
 
           {/* ─── Tabs ─── */}
-          <div className="flex gap-1.5 px-4 py-3 overflow-x-auto border-b border-gray-200 scrollbar-none shrink-0">
+          <div className="flex flex-wrap gap-1.5 px-4 py-3 border-b border-gray-200 shrink-0">
             {tabs.map(({ key, icon: Icon, label }) => {
               const isActive = activeTab === key;
               return (
