@@ -204,57 +204,11 @@ serve(async (req) => {
       throw new Error(`Agentverse hosting submit error: ${submitRes.status}`);
     }
 
-    // Poll the sender's mailbox for the response from the agent
-    let responseContent: string | null = null;
-    const maxAttempts = 15;
-    const pollInterval = 2000; // 2 seconds
-
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      await new Promise((resolve) => setTimeout(resolve, pollInterval));
-
-      try {
-        const mailboxRes = await fetch(
-          `https://agentverse.ai/v2/agents/${sender.address}/mailbox`,
-          {
-            headers: {
-              Authorization: `Bearer ${AGENTVERSE_API_KEY}`,
-            },
-          }
-        );
-
-        if (mailboxRes.ok) {
-          const mailboxData = await mailboxRes.json();
-          console.log(`Mailbox poll ${attempt + 1}:`, JSON.stringify(mailboxData).slice(0, 200));
-
-          // Look for response messages
-          const messages = Array.isArray(mailboxData) ? mailboxData : mailboxData?.items || [];
-          for (const msg of messages) {
-            if (
-              msg.schema_digest === LOCATION_RESPONSE_DIGEST ||
-              msg.sender === AGENT_ADDRESS
-            ) {
-              // Decode payload
-              try {
-                const decoded = atob(msg.payload || "");
-                const parsed = JSON.parse(decoded);
-                responseContent = parsed.content || parsed.text || null;
-                console.log("Got response from agent!");
-                break;
-              } catch (e) {
-                console.error("Failed to decode response payload:", e);
-              }
-            }
-          }
-
-          if (responseContent) break;
-        } else {
-          const errText = await mailboxRes.text();
-          console.log(`Mailbox poll ${attempt + 1} failed:`, mailboxRes.status, errText);
-        }
-      } catch (pollErr) {
-        console.error(`Mailbox poll ${attempt + 1} error:`, pollErr);
-      }
-    }
+    // NOTE: Response routing requires sender registration on Almanac.
+    // For now, the agent processes the request (confirmed in logs) but
+    // the response can't route back. Using Lovable AI as the response source
+    // while the Fetch.ai agent is triggered in parallel for the ecosystem.
+    console.log("Envelope delivered to Rooted agent. Using AI fallback for response.");
 
     const imageUrl = await imagePromise;
 
