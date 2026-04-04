@@ -276,7 +276,7 @@ const InfoPanel = ({
                 </p>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+              <div className="flex items-center justify-center h-full text-gray-500 text-sm">
                 Click anywhere on the map to explore
               </div>
             )}
