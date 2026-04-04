@@ -6,8 +6,9 @@ interface MapViewProps {
 }
 
 function ClickHandler({ onLocationClick }: MapViewProps) {
-  useMapEvents({
+  const map = useMapEvents({
     click(e) {
+      map.flyTo(e.latlng, Math.max(map.getZoom(), 6), { duration: 1.2 });
       onLocationClick(e.latlng.lat, e.latlng.lng);
     },
   });
