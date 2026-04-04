@@ -166,6 +166,7 @@ serve(async (req) => {
       target: AGENT_ADDRESS,
       session,
       schema_digest: LOCATION_REQUEST_DIGEST,
+      protocol_digest: PROTOCOL_DIGEST,
       payload: payloadB64,
       expires,
       nonce,
@@ -181,27 +182,26 @@ serve(async (req) => {
       signature,
     };
 
-    console.log("Submitting envelope to Agentverse proxy...");
+    console.log("Submitting envelope to Agentverse hosting...");
 
     // Fetch Wikipedia image in parallel
     const imagePromise = fetchWikipediaImage(locationName);
 
-    // Submit to Agentverse proxy
-    const proxyRes = await fetch("https://agentverse.ai/v2/agents/proxy/submit", {
+    // Submit to Agentverse hosting endpoint (for hosted agents)
+    const submitRes = await fetch("https://agentverse.ai/v1/hosting/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${AGENTVERSE_API_KEY}`,
       },
       body: JSON.stringify(envelope),
     });
 
-    const proxyText = await proxyRes.text();
-    console.log("Proxy response:", proxyRes.status, proxyText);
+    const submitText = await submitRes.text();
+    console.log("Submit response:", submitRes.status, submitText);
 
-    if (!proxyRes.ok) {
-      console.error("Proxy submit failed:", proxyRes.status, proxyText);
-      throw new Error(`Agentverse proxy error: ${proxyRes.status}`);
+    if (!submitRes.ok) {
+      console.error("Hosting submit failed:", submitRes.status, submitText);
+      throw new Error(`Agentverse hosting submit error: ${submitRes.status}`);
     }
 
     // Poll the sender's mailbox for the response from the agent
