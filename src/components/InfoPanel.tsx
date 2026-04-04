@@ -283,8 +283,8 @@ const InfoPanel = ({
           </div>
 
           {/* ─── Footer ─── */}
-          <div className="px-5 py-3 border-t border-border/60 shrink-0">
-            <p className="text-[11px] text-muted-foreground/70 font-body text-center">
+          <div className="px-5 py-3 border-t border-gray-200 shrink-0">
+            <p className="text-[11px] text-gray-400 font-body text-center">
               Powered by AI · Images via Wikipedia
             </p>
           </div>
