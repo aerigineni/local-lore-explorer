@@ -1,16 +1,105 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useCallback } from "react";
+import { Globe, Compass } from "lucide-react";
+import MapView from "@/components/MapView";
+import InfoPanel from "@/components/InfoPanel";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [locationName, setLocationName] = useState<string | null>(null);
+  const [content, setContent] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
+
+  const handleLocationClick = useCallback(async (clickLat: number, clickLng: number) => {
+    setLat(clickLat);
+    setLng(clickLng);
+    setPanelOpen(true);
+    setIsLoading(true);
+    setContent(null);
+    setLocationName(null);
+
+    try {
+      // Reverse geocode with Nominatim
+      const geoRes = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${clickLat}&lon=${clickLng}&format=json&zoom=10&accept-language=en`
+      );
+      const geoData = await geoRes.json();
+      const name =
+        geoData.address?.city ||
+        geoData.address?.town ||
+        geoData.address?.village ||
+        geoData.address?.state ||
+        geoData.address?.country ||
+        geoData.display_name ||
+        "Unknown Location";
+      const country = geoData.address?.country || "";
+      const fullName = country && name !== country ? `${name}, ${country}` : name;
+      setLocationName(fullName);
+
+      // Fetch cultural info from AI
+      const { data, error } = await supabase.functions.invoke("location-culture", {
+        body: { locationName: fullName, lat: clickLat, lng: clickLng },
+      });
+
+      if (error) throw error;
+      setContent(data.content);
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Failed to fetch info about this location");
+      setContent("Unable to retrieve cultural information for this location. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="h-screen w-screen overflow-hidden relative">
+      {/* Map */}
+      <MapView onLocationClick={handleLocationClick} />
+
+      {/* Top bar overlay */}
+      <div className="fixed top-0 left-0 right-0 z-[999] pointer-events-none">
+        <div className="flex items-center justify-between p-4 md:p-6">
+          <div className="flex items-center gap-3 pointer-events-auto">
+            <div className="w-10 h-10 rounded-xl bg-card/80 backdrop-blur-lg border border-border flex items-center justify-center">
+              <Globe className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-display text-lg font-bold text-foreground drop-shadow-lg">
+                CultureMap
+              </h1>
+              <p className="text-xs text-muted-foreground font-body drop-shadow-md">
+                Click anywhere to discover
+              </p>
+            </div>
+          </div>
+
+          {!panelOpen && (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/80 backdrop-blur-lg border border-border pointer-events-auto">
+              <Compass className="w-4 h-4 text-primary animate-pulse" />
+              <span className="text-xs font-body text-secondary-foreground">
+                Tap a location to explore its story
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Info Panel */}
+      <InfoPanel
+        isOpen={panelOpen}
+        onClose={() => setPanelOpen(false)}
+        locationName={locationName}
+        content={content}
+        isLoading={isLoading}
+        lat={lat}
+        lng={lng}
+      />
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
