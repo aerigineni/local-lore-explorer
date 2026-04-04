@@ -63,7 +63,7 @@ const Index = () => {
       // Add to search history
       addEntry(fullName, clickLat, clickLng);
 
-      const { data, error } = await supabase.functions.invoke("fetchai-agent", {
+      const { data, error } = await supabase.functions.invoke("location-culture", {
         body: { locationName: fullName, lat: clickLat, lng: clickLng },
       });
 
