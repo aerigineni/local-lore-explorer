@@ -21,25 +21,40 @@ const Index = () => {
     setContent(null);
     setLocationName(null);
 
+    const fallbackLocationName = `${Math.abs(clickLat).toFixed(2)}°${clickLat >= 0 ? "N" : "S"}, ${Math.abs(clickLng).toFixed(2)}°${clickLng >= 0 ? "E" : "W"}`;
+
     try {
-      // Reverse geocode with Nominatim
-      const geoRes = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${clickLat}&lon=${clickLng}&format=json&zoom=10&accept-language=en`
-      );
-      const geoData = await geoRes.json();
+      let geoData: any = null;
+
+      for (const zoom of [10, 6, 3]) {
+        const geoRes = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${clickLat}&lon=${clickLng}&format=json&zoom=${zoom}&accept-language=en`
+        );
+
+        if (!geoRes.ok) continue;
+
+        const nextGeoData = await geoRes.json();
+        if (!nextGeoData?.error) {
+          geoData = nextGeoData;
+          break;
+        }
+      }
+
       const name =
-        geoData.address?.city ||
-        geoData.address?.town ||
-        geoData.address?.village ||
-        geoData.address?.state ||
-        geoData.address?.country ||
-        geoData.display_name ||
-        "Unknown Location";
-      const country = geoData.address?.country || "";
+        geoData?.name ||
+        geoData?.address?.city ||
+        geoData?.address?.town ||
+        geoData?.address?.village ||
+        geoData?.address?.county ||
+        geoData?.address?.state ||
+        geoData?.address?.country ||
+        geoData?.display_name?.split(",").slice(0, 2).join(",").trim() ||
+        `Remote area near ${fallbackLocationName}`;
+
+      const country = geoData?.address?.country || "";
       const fullName = country && name !== country ? `${name}, ${country}` : name;
       setLocationName(fullName);
 
-      // Fetch cultural info from AI
       const { data, error } = await supabase.functions.invoke("location-culture", {
         body: { locationName: fullName, lat: clickLat, lng: clickLng },
       });
@@ -49,6 +64,7 @@ const Index = () => {
     } catch (err: any) {
       console.error(err);
       toast.error("Failed to fetch info about this location");
+      setLocationName(`Remote area near ${fallbackLocationName}`);
       setContent("Unable to retrieve cultural information for this location. Please try again.");
     } finally {
       setIsLoading(false);
