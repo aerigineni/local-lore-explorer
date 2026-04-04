@@ -111,7 +111,7 @@ const Index = () => {
             </div>
             <div>
               <h1 className="font-display text-lg font-bold text-foreground drop-shadow-lg">
-                CultureMap
+                WorldTour
               </h1>
               <p className="text-xs text-muted-foreground font-body drop-shadow-md">
                 Click anywhere to discover

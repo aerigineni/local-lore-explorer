@@ -145,6 +145,10 @@ const InfoPanel = ({
   const [activeTab, setActiveTab] = useState("history");
   const [imgError, setImgError] = useState(false);
 
+  useEffect(() => {
+    setImgError(false);
+  }, [imageUrl]);
+
   const sections = useMemo(() => (content ? parseSections(content) : {}), [content]);
   const activeContent = sections[activeTab];
   const activeTabMeta = tabs.find((t) => t.key === activeTab)!;
