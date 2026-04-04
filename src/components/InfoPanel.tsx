@@ -121,7 +121,7 @@ function RichContent({ text }: { text: string }) {
     } else {
       flushBullets();
       elements.push(
-        <p key={`p-${elements.length}`} className="text-sm text-secondary-foreground leading-relaxed">
+        <p key={`p-${elements.length}`} className="text-sm text-foreground/80 leading-relaxed">
           <RichLine text={line} />
         </p>
       );
