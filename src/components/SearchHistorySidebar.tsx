@@ -25,7 +25,7 @@ const SearchHistorySidebar = ({
       {/* Toggle button — always visible */}
       <button
         onClick={onToggle}
-        className="fixed top-[120px] left-4 z-[1001] w-10 h-10 rounded-xl bg-card/80 backdrop-blur-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-card transition-all"
+        className="fixed top-[120px] left-4 z-[1001] w-10 h-10 rounded-xl bg-card/80 backdrop-blur-lg border border-border flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-card transition-all"
         style={{ left: isOpen ? "calc(280px + 1rem)" : "1rem" }}
       >
         {isOpen ? <ChevronLeft className="w-5 h-5" /> : <History className="w-5 h-5" />}
@@ -52,7 +52,7 @@ const SearchHistorySidebar = ({
               {history.length > 0 && (
                 <button
                   onClick={onClear}
-                  className="text-[11px] text-muted-foreground hover:text-destructive font-body transition-colors"
+                  className="text-[11px] text-blue-600 hover:text-blue-700 font-body transition-colors"
                 >
                   Clear all
                 </button>

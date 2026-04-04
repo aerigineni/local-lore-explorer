@@ -7,17 +7,27 @@ const corsHeaders = {
 };
 
 async function fetchWikipediaImage(locationName: string): Promise<string | null> {
-  try {
-    const searchName = locationName.split(",")[0].trim();
-    const searchRes = await fetch(
-      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchName)}`
-    );
-    if (!searchRes.ok) return null;
-    const data = await searchRes.json();
-    return data?.thumbnail?.source?.replace(/\/\d+px-/, "/800px-") || null;
-  } catch {
-    return null;
+  const candidates = [
+    locationName.split(",")[0].trim(),
+    ...locationName.split(",").map(s => s.trim()),
+    locationName,
+  ];
+  // Deduplicate
+  const unique = [...new Set(candidates)];
+
+  for (const name of unique) {
+    try {
+      const res = await fetch(
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`
+      );
+      if (!res.ok) continue;
+      const data = await res.json();
+      const img = data?.thumbnail?.source?.replace(/\/\d+px-/, "/800px-") ||
+                  data?.originalimage?.source;
+      if (img) return img;
+    } catch { /* try next */ }
   }
+  return null;
 }
 
 serve(async (req) => {

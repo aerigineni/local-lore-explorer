@@ -110,7 +110,7 @@ const Index = () => {
               <Globe className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h1 className="font-display text-lg font-bold text-foreground drop-shadow-lg">
+              <h1 className="font-display text-lg font-bold text-black drop-shadow-lg">
                 WorldTour
               </h1>
               <p className="text-xs text-muted-foreground font-body drop-shadow-md">
