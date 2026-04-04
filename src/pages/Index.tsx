@@ -2,6 +2,8 @@ import { useState, useCallback } from "react";
 import { Globe, Compass } from "lucide-react";
 import MapView from "@/components/MapView";
 import InfoPanel from "@/components/InfoPanel";
+import SearchHistorySidebar from "@/components/SearchHistorySidebar";
+import { useSearchHistory } from "@/hooks/use-search-history";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -13,6 +15,9 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { history, addEntry, clearHistory, removeEntry } = useSearchHistory();
 
   const handleLocationClick = useCallback(async (clickLat: number, clickLng: number) => {
     setLat(clickLat);
@@ -55,6 +60,9 @@ const Index = () => {
       const fullName = country && name !== country ? `${name}, ${country}` : name;
       setLocationName(fullName);
 
+      // Add to search history
+      addEntry(fullName, clickLat, clickLng);
+
       const { data, error } = await supabase.functions.invoke("fetchai-agent", {
         body: { locationName: fullName, lat: clickLat, lng: clickLng },
       });
@@ -73,16 +81,31 @@ const Index = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [addEntry]);
+
+  const handleHistorySelect = useCallback((entry: { locationName: string; lat: number; lng: number }) => {
+    handleLocationClick(entry.lat, entry.lng);
+    setSidebarOpen(false);
+  }, [handleLocationClick]);
 
   return (
     <div className="h-screen w-screen overflow-hidden relative">
       <MapView onLocationClick={handleLocationClick} />
 
+      {/* Search history sidebar */}
+      <SearchHistorySidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen((o) => !o)}
+        history={history}
+        onSelect={handleHistorySelect}
+        onRemove={removeEntry}
+        onClear={clearHistory}
+      />
+
       {/* Top bar */}
       <div className="fixed top-0 left-0 right-0 z-[999] pointer-events-none">
         <div className="flex items-center justify-between p-4 md:p-6">
-          <div className="flex items-center gap-3 pointer-events-auto">
+          <div className="flex items-center gap-3 pointer-events-auto" style={{ marginLeft: "3.5rem" }}>
             <div className="w-10 h-10 rounded-xl bg-card/80 backdrop-blur-lg border border-border flex items-center justify-center">
               <Globe className="w-5 h-5 text-primary" />
             </div>
