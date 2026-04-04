@@ -14,11 +14,11 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { request_id, content } = body;
+    const { location_name, content } = body;
 
-    if (!request_id || !content) {
+    if (!location_name || !content) {
       return new Response(
-        JSON.stringify({ error: "Missing request_id or content" }),
+        JSON.stringify({ error: "Missing location_name or content" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -27,10 +27,28 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Find the most recent pending request for this location
+    const { data: pending, error: fetchError } = await supabase
+      .from("agent_responses")
+      .select("request_id")
+      .eq("location_name", location_name)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (fetchError || !pending) {
+      console.error("No pending request found for:", location_name, fetchError);
+      return new Response(
+        JSON.stringify({ error: "No pending request found" }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const { error } = await supabase
       .from("agent_responses")
       .update({ response_content: content, status: "completed" })
-      .eq("request_id", request_id);
+      .eq("request_id", pending.request_id);
 
     if (error) {
       console.error("DB update error:", error);
@@ -40,7 +58,7 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Webhook received response for request: ${request_id}`);
+    console.log(`Webhook received response for location: ${location_name} (request: ${pending.request_id})`);
 
     return new Response(
       JSON.stringify({ success: true }),

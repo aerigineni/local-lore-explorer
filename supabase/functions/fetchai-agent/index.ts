@@ -145,9 +145,9 @@ serve(async (req) => {
     const sender = createIdentity(senderSeed);
     console.log("Sender address:", sender.address);
 
-    // Embed request_id in location_name (keeps original 3-field model digest)
+    // Original 3-field payload — no modifications to the model
     const payload = JSON.stringify({
-      location_name: `${locationName}|||${requestId}`,
+      location_name: locationName,
       lat,
       lng,
     });
