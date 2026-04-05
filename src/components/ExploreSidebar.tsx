@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { Compass, Search, MapPin, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,10 @@ export interface ExploreLocation {
   description: string;
 }
 
+export interface ExploreSidebarHandle {
+  setQueryAndSearch: (q: string) => void;
+}
+
 interface ExploreSidebarProps {
   isOpen: boolean;
   onToggle: () => void;
@@ -18,14 +22,29 @@ interface ExploreSidebarProps {
   onResults: (locations: ExploreLocation[]) => void;
 }
 
-const ExploreSidebar = ({ isOpen, onToggle, onSelect, onResults }: ExploreSidebarProps) => {
+const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ isOpen, onToggle, onSelect, onResults }, ref) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ExploreLocation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [pendingSearch, setPendingSearch] = useState<string | null>(null);
 
-  const handleSearch = async () => {
-    const trimmed = query.trim();
+  useImperativeHandle(ref, () => ({
+    setQueryAndSearch: (q: string) => {
+      setQuery(q);
+      setPendingSearch(q);
+    },
+  }));
+
+  useEffect(() => {
+    if (pendingSearch && isOpen) {
+      setPendingSearch(null);
+      doSearch(pendingSearch);
+    }
+  }, [pendingSearch, isOpen]);
+
+  const doSearch = async (searchQuery: string) => {
+    const trimmed = searchQuery.trim();
     if (!trimmed) return;
 
     setIsLoading(true);
@@ -53,6 +72,10 @@ const ExploreSidebar = ({ isOpen, onToggle, onSelect, onResults }: ExploreSideba
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = async () => {
+    doSearch(query);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -193,6 +216,8 @@ const ExploreSidebar = ({ isOpen, onToggle, onSelect, onResults }: ExploreSideba
       </AnimatePresence>
     </>
   );
-};
+});
+
+ExploreSidebar.displayName = "ExploreSidebar";
 
 export default ExploreSidebar;

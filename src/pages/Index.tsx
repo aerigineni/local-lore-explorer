@@ -1,9 +1,9 @@
-import { useState, useCallback } from "react";
-import { Compass } from "lucide-react";
+import { useState, useCallback, useRef } from "react";
+import { Compass, Search } from "lucide-react";
 import MapView from "@/components/MapView";
 import InfoPanel from "@/components/InfoPanel";
 import SearchHistorySidebar from "@/components/SearchHistorySidebar";
-import ExploreSidebar from "@/components/ExploreSidebar";
+import ExploreSidebar, { ExploreSidebarHandle } from "@/components/ExploreSidebar";
 import { ExploreLocation } from "@/components/ExploreSidebar";
 import { useSearchHistory } from "@/hooks/use-search-history";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +20,8 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [exploreMarkers, setExploreMarkers] = useState<ExploreLocation[]>([]);
+  const [topSearchQuery, setTopSearchQuery] = useState("");
+  const exploreRef = useRef<ExploreSidebarHandle>(null);
 
   const { history, addEntry, clearHistory, removeEntry } = useSearchHistory();
 
@@ -130,21 +132,22 @@ const Index = () => {
 
       {/* Explore sidebar */}
       <ExploreSidebar
+        ref={exploreRef}
         isOpen={exploreOpen}
         onToggle={() => { setExploreOpen((o) => !o); setSidebarOpen(false); }}
         onSelect={handleExploreSelect}
         onResults={handleExploreResults}
       />
 
-      {/* Top bar — Journal title */}
+      {/* Top bar */}
       <div className="fixed top-0 left-0 right-0 z-[999] pointer-events-none">
-        <div className="flex items-center justify-between p-4 md:p-6">
+        <div className="flex items-center justify-between p-4 md:p-6 gap-4">
           <div className="flex items-center gap-3 pointer-events-auto ml-14">
             <div className="w-10 h-10 rounded bg-card/90 border-2 border-border flex items-center justify-center"
                  style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.15)" }}>
               <Compass className="w-5 h-5 text-primary" />
             </div>
-            <div>
+            <div className="hidden sm:block">
               <h1 className="font-display text-xl font-bold text-foreground drop-shadow-md tracking-wide">
                 WorldTour
               </h1>
@@ -154,15 +157,38 @@ const Index = () => {
             </div>
           </div>
 
-          {!panelOpen && (
-            <div className="flex items-center gap-2 px-4 py-2 rounded bg-card/90 border-2 border-border pointer-events-auto"
-                 style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.12)" }}>
-              <Compass className="w-4 h-4 text-primary animate-pulse" />
-              <span className="text-xs font-body italic text-secondary-foreground">
-                Tap anywhere to begin your journey
-              </span>
+          {/* Search bar */}
+          <form
+            className="pointer-events-auto flex-1 max-w-md"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const q = topSearchQuery.trim();
+              if (!q) return;
+              setSidebarOpen(false);
+              if (!exploreOpen) setExploreOpen(true);
+              exploreRef.current?.setQueryAndSearch(q);
+              setTopSearchQuery("");
+            }}
+          >
+            <div className="relative">
+              <input
+                type="text"
+                value={topSearchQuery}
+                onChange={(e) => setTopSearchQuery(e.target.value)}
+                placeholder="Where does your curiosity lead you?"
+                className="w-full h-10 pl-4 pr-10 rounded bg-card/90 border-2 border-border text-sm font-body text-foreground placeholder:text-muted-foreground/60 placeholder:italic focus:outline-none focus:ring-2 focus:ring-primary/40 backdrop-blur-sm"
+                style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.12)" }}
+              />
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded flex items-center justify-center text-primary hover:text-foreground transition-colors"
+              >
+                <Search className="w-4 h-4" />
+              </button>
             </div>
-          )}
+          </form>
+
+          <div className="w-10 shrink-0" />
         </div>
       </div>
 
