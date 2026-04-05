@@ -127,7 +127,14 @@ const ExploreSidebar = ({ isOpen, onToggle, onSelect, onResults }: ExploreSideba
 
             {/* Results */}
             <div className="flex-1 overflow-y-auto">
-              {results.length === 0 && !isLoading ? (
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center h-full gap-3 px-6 text-center">
+                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  <p className="text-xs text-muted-foreground font-body">
+                    Finding locations...
+                  </p>
+                </div>
+              ) : results.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full gap-3 px-6 text-center">
                   <Search className="w-8 h-8 text-muted-foreground/30" />
                   <p className="text-xs text-muted-foreground font-body">
