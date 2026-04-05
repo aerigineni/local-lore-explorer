@@ -235,23 +235,88 @@ const Index = () => {
             </div>
           </motion.form>
 
-          {/* Wax seal Surprise Me button */}
-          <button
-            onClick={handleSurpriseMe}
-            disabled={isSurprising}
-            className="pointer-events-auto wax-seal shrink-0"
-            title="Surprise Me!"
-          >
-            {isSurprising ? (
-              <Loader2 className="w-5 h-5 animate-spin text-primary-foreground" />
-            ) : (
-              <span className="font-display text-xs font-bold text-primary-foreground leading-tight text-center">
-                Surprise<br />Me
-              </span>
-            )}
-          </button>
+          <div className="w-10 shrink-0" />
         </div>
       </div>
+
+      {/* Bottom-left floating buttons */}
+      <div className="fixed bottom-6 left-4 z-[999] flex flex-col gap-3 pointer-events-auto">
+        <button
+          onClick={handleSurpriseMe}
+          disabled={isSurprising}
+          className="w-12 h-12 rounded-full bg-card/95 border-2 border-border flex items-center justify-center hover:bg-secondary/80 transition-all hover:scale-105 active:scale-95"
+          style={{ boxShadow: "2px 2px 8px hsl(25 30% 20% / 0.2)" }}
+          title="Surprise Me!"
+        >
+          {isSurprising ? (
+            <Loader2 className="w-5 h-5 animate-spin text-primary" />
+          ) : (
+            <Dices className="w-5 h-5 text-primary" />
+          )}
+        </button>
+        <button
+          onClick={() => setHelpOpen(true)}
+          className="w-12 h-12 rounded-full bg-card/95 border-2 border-border flex items-center justify-center hover:bg-secondary/80 transition-all hover:scale-105 active:scale-95"
+          style={{ boxShadow: "2px 2px 8px hsl(25 30% 20% / 0.2)" }}
+          title="Help"
+        >
+          <HelpCircle className="w-5 h-5 text-primary" />
+        </button>
+      </div>
+
+      {/* Help modal */}
+      <AnimatePresence>
+        {helpOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1100] flex items-center justify-center p-4"
+            onClick={() => setHelpOpen(false)}
+          >
+            <div className="absolute inset-0 bg-foreground/30 backdrop-blur-sm" />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative bg-card journal-texture border-2 border-border rounded-lg max-w-md w-full p-6"
+              style={{ boxShadow: "4px 4px 20px hsl(25 30% 20% / 0.25)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setHelpOpen(false)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <h2 className="font-display text-xl font-bold text-foreground mb-4">
+                Your Travel Companion
+              </h2>
+              <div className="space-y-3 text-sm font-body text-foreground/85 leading-relaxed">
+                <p>
+                  <strong className="text-primary">🗺 Tap the map</strong> — Click anywhere on the map to discover the culture, history, and stories of that place.
+                </p>
+                <p>
+                  <strong className="text-primary">🔍 Search bar</strong> — Type any theme, cuisine, era, or wonder to explore matching destinations worldwide.
+                </p>
+                <p>
+                  <strong className="text-primary">📑 Explore tab</strong> — Browse and expand results to read about each destination, then click to fly there.
+                </p>
+                <p>
+                  <strong className="text-primary">📗 History tab</strong> — Revisit any place you've already explored from your journey log.
+                </p>
+                <p>
+                  <strong className="text-primary">🎲 Surprise Me</strong> — Feeling adventurous? Roll the dice and let fate pick your next destination.
+                </p>
+              </div>
+              <p className="mt-4 text-xs font-body italic text-muted-foreground text-center">
+                The world is a book — start turning its pages.
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <InfoPanel
         isOpen={panelOpen}
