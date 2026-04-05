@@ -3,6 +3,8 @@ import { Globe, Compass } from "lucide-react";
 import MapView from "@/components/MapView";
 import InfoPanel from "@/components/InfoPanel";
 import SearchHistorySidebar from "@/components/SearchHistorySidebar";
+import ExploreSidebar from "@/components/ExploreSidebar";
+import { ExploreLocation } from "@/components/ExploreSidebar";
 import { useSearchHistory } from "@/hooks/use-search-history";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -16,6 +18,8 @@ const Index = () => {
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [exploreOpen, setExploreOpen] = useState(false);
+  const [exploreMarkers, setExploreMarkers] = useState<ExploreLocation[]>([]);
 
   const { history, addEntry, clearHistory, removeEntry } = useSearchHistory();
 
@@ -60,7 +64,6 @@ const Index = () => {
       const fullName = country && name !== country ? `${name}, ${country}` : name;
       setLocationName(fullName);
 
-      // Add to search history
       addEntry(fullName, clickLat, clickLng);
 
       const { data, error } = await supabase.functions.invoke("location-culture", {
@@ -88,9 +91,31 @@ const Index = () => {
     setSidebarOpen(false);
   }, [handleLocationClick]);
 
+  const handleExploreSelect = useCallback((location: ExploreLocation) => {
+    handleLocationClick(location.lat, location.lng);
+  }, [handleLocationClick]);
+
+  const handleExploreResults = useCallback((locations: ExploreLocation[]) => {
+    setExploreMarkers(locations);
+  }, []);
+
+  const handleMarkerClick = useCallback((marker: { lat: number; lng: number; name: string }) => {
+    handleLocationClick(marker.lat, marker.lng);
+  }, [handleLocationClick]);
+
+  const mapMarkers = exploreMarkers.map((loc) => ({
+    lat: loc.lat,
+    lng: loc.lng,
+    name: loc.name,
+  }));
+
   return (
     <div className="h-screen w-screen overflow-hidden relative">
-      <MapView onLocationClick={handleLocationClick} />
+      <MapView
+        onLocationClick={handleLocationClick}
+        markers={mapMarkers}
+        onMarkerClick={handleMarkerClick}
+      />
 
       {/* Search history sidebar */}
       <SearchHistorySidebar
@@ -100,6 +125,14 @@ const Index = () => {
         onSelect={handleHistorySelect}
         onRemove={removeEntry}
         onClear={clearHistory}
+      />
+
+      {/* Explore sidebar */}
+      <ExploreSidebar
+        isOpen={exploreOpen}
+        onToggle={() => setExploreOpen((o) => !o)}
+        onSelect={handleExploreSelect}
+        onResults={handleExploreResults}
       />
 
       {/* Top bar */}
