@@ -144,6 +144,7 @@ const Index = () => {
   }, [handleLocationClick]);
 
   const handleExploreSelect = useCallback((location: ExploreLocation, searchQuery: string) => {
+    mapRef.current?.flyTo(location.lat, location.lng);
     handleLocationClick(location.lat, location.lng, searchQuery || undefined);
   }, [handleLocationClick]);
 
@@ -209,9 +210,9 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Search bar with animation */}
+          {/* Search bar */}
           <motion.form
-            className="pointer-events-auto flex-1 max-w-md mx-auto"
+            className="pointer-events-auto flex-1 max-w-md mr-auto ml-4"
             animate={{
               scale: searchFocused ? 1.03 : 1,
             }}
@@ -319,19 +320,25 @@ const Index = () => {
               </h2>
               <div className="space-y-3 text-sm font-body text-foreground/85 leading-relaxed">
                 <p>
-                  <strong className="text-primary">🗺 Tap the map:</strong> Click anywhere on the map to discover the culture, history, and stories of that place.
+                  <strong className="text-primary">🗺 Tap the map:</strong> Click anywhere to uncover the history, culture, food, and stories of any place on Earth.
                 </p>
                 <p>
-                  <strong className="text-primary">🔍 Search bar:</strong> Type any theme, cuisine, era, or wonder to explore matching destinations worldwide.
+                  <strong className="text-primary">🔍 Search:</strong> Type anything, from "ancient temples" to "best street food", and discover matching destinations worldwide.
                 </p>
                 <p>
-                  <strong className="text-primary">📑 Explore tab:</strong> Browse and expand results to read about each destination, then click to fly there.
+                  <strong className="text-primary">📑 Explore tab:</strong> Browse search results with descriptions. Click any destination to fly there and see how it connects to your search.
                 </p>
                 <p>
-                  <strong className="text-primary">📗 History tab:</strong> Revisit any place you've already explored from your journey log.
+                  <strong className="text-primary">📗 History tab:</strong> Your personal journey log. Revisit any place you've explored before.
                 </p>
                 <p>
-                  <strong className="text-primary">🎲 Surprise Me:</strong> Feeling adventurous? Roll the dice and let fate pick your next destination.
+                  <strong className="text-primary">🎲 Surprise Me:</strong> Roll the dice and get whisked away to a random fascinating destination.
+                </p>
+                <p>
+                  <strong className="text-primary">🌍 Reset view:</strong> Zoom out to see the full world map again.
+                </p>
+                <p>
+                  <strong className="text-primary">📖 Six perspectives:</strong> Each location is explored through History, Food, Culture, Stories, News, and Issues tabs.
                 </p>
               </div>
               <p className="mt-4 text-xs font-body italic text-muted-foreground text-center">

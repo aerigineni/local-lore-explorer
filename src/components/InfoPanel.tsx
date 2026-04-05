@@ -164,8 +164,9 @@ const InfoPanel = ({
           {/* Explore context */}
           {exploreContext && (
             <div className="px-5 py-3 border-b border-border shrink-0 bg-primary/5">
-              <p className="text-sm text-foreground/90 font-body leading-relaxed italic">
-                {exploreContext}
+              <p className="text-sm text-foreground/90 font-body leading-relaxed">
+                <strong className="text-primary font-display not-italic">Connection: </strong>
+                <span className="italic">{exploreContext}</span>
               </p>
             </div>
           )}
