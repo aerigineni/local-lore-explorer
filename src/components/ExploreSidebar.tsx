@@ -78,11 +78,11 @@ const ExploreSidebar = ({ isOpen, onToggle, onSelect, onResults }: ExploreSideba
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: -280, opacity: 0 }}
+            initial={{ x: -320, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -280, opacity: 0 }}
+            exit={{ x: -320, opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 260 }}
-            className="fixed top-0 left-0 h-full w-[280px] bg-card/95 backdrop-blur-2xl border-r border-border z-[1000] flex flex-col shadow-2xl"
+            className="fixed top-0 left-0 h-full w-[320px] bg-card/95 backdrop-blur-2xl border-r border-border z-[1000] flex flex-col shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-4 border-b border-border shrink-0">
