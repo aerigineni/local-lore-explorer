@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { query } = await req.json();
+    const { query, exclude } = await req.json();
     if (!query || typeof query !== "string") {
       return new Response(JSON.stringify({ error: "query is required" }), {
         status: 400,
@@ -25,7 +25,11 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY not configured");
     }
 
-    const prompt = `Given the query "${query}", return a JSON array of up to 15 real-world locations that are most relevant or associated with it. Each object must have: "name" (location name with country), "lat" (latitude number), "lng" (longitude number), "description" (one short sentence about why it's relevant). Return ONLY valid JSON array, no markdown, no explanation.`;
+    const excludeList = Array.isArray(exclude) && exclude.length > 0
+      ? ` Do NOT include any of these locations: ${exclude.join(", ")}.`
+      : "";
+
+    const prompt = `Given the query "${query}", return a JSON array of up to 10 real-world locations that are most relevant or associated with it.${excludeList} Each object must have: "name" (location name with country), "lat" (latitude number), "lng" (longitude number), "description" (one short sentence about why it's relevant). Return ONLY valid JSON array, no markdown, no explanation.`;
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -52,7 +56,7 @@ serve(async (req) => {
     const jsonMatch = rawText.match(/\[[\s\S]*\]/);
     const locations = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
 
-    return new Response(JSON.stringify({ locations: locations.slice(0, 15) }), {
+    return new Response(JSON.stringify({ locations: locations.slice(0, 10) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

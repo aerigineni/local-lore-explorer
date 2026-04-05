@@ -1,5 +1,5 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { Compass, Search, MapPin, Loader2 } from "lucide-react";
+import { Compass, Search, MapPin, Loader2, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -26,8 +26,10 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ExploreLocation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [pendingSearch, setPendingSearch] = useState<string | null>(null);
+  const [lastQuery, setLastQuery] = useState("");
 
   useImperativeHandle(ref, () => ({
     setQueryAndSearch: (q: string) => {
@@ -50,6 +52,7 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
     setIsLoading(true);
     setResults([]);
     setExpandedIndex(null);
+    setLastQuery(trimmed);
     onResults([]);
 
     try {
@@ -74,6 +77,35 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
     }
   };
 
+  const handleLoadMore = async () => {
+    if (!lastQuery || isLoadingMore) return;
+    setIsLoadingMore(true);
+
+    try {
+      const exclude = results.map((r) => r.name);
+      const { data, error } = await supabase.functions.invoke("explore-locations", {
+        body: { query: lastQuery, exclude },
+      });
+
+      if (error) throw error;
+
+      const newLocations: ExploreLocation[] = data?.locations || [];
+      if (newLocations.length === 0) {
+        toast.info("No more destinations to discover");
+        return;
+      }
+
+      const combined = [...results, ...newLocations];
+      setResults(combined);
+      onResults(combined);
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Failed to load more locations");
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
   const handleSearch = async () => {
     doSearch(query);
   };
@@ -86,6 +118,7 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
     setQuery("");
     setResults([]);
     setExpandedIndex(null);
+    setLastQuery("");
     onResults([]);
   };
 
@@ -201,6 +234,29 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
                       </div>
                     );
                   })}
+                  {/* See more button */}
+                  {results.length >= 5 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLoadMore();
+                      }}
+                      disabled={isLoadingMore}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-body italic text-primary hover:text-foreground transition-colors border-t border-border/40"
+                    >
+                      {isLoadingMore ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Discovering more...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-3.5 h-3.5" />
+                          <span>Discover more destinations</span>
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
