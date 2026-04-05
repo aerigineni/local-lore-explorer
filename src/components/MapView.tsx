@@ -17,6 +17,7 @@ interface MapViewProps {
 
 export interface MapViewHandle {
   resetView: () => void;
+  flyTo: (lat: number, lng: number, zoom?: number) => void;
 }
 
 const redIcon = new L.Icon({
