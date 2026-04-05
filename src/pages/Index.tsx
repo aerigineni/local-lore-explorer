@@ -47,6 +47,7 @@ const Index = () => {
   const [topSearchQuery, setTopSearchQuery] = useState("");
   const [isSurprising, setIsSurprising] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const exploreRef = useRef<ExploreSidebarHandle>(null);
 
   const { history, addEntry, clearHistory, removeEntry } = useSearchHistory();
