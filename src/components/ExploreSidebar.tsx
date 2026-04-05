@@ -43,8 +43,8 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
     }
   }, [pendingSearch, isOpen]);
 
-  const handleSearch = async () => {
-    const trimmed = query.trim();
+  const doSearch = async (searchQuery: string) => {
+    const trimmed = searchQuery.trim();
     if (!trimmed) return;
 
     setIsLoading(true);
@@ -72,6 +72,10 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = async () => {
+    doSearch(query);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
