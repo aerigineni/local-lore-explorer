@@ -143,7 +143,9 @@ const Index = () => {
   }, [handleLocationClick]);
 
   const handleExploreSelect = useCallback((location: ExploreLocation) => {
-    handleLocationClick(location.lat, location.lng);
+    // Pass the current explore query as searchQuery context
+    const currentQuery = exploreRef.current ? query : "";
+    handleLocationClick(location.lat, location.lng, currentQuery || undefined);
   }, [handleLocationClick]);
 
   const handleExploreResults = useCallback((locations: ExploreLocation[]) => {
