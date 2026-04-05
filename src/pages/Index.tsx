@@ -350,6 +350,7 @@ const Index = () => {
         isLoading={isLoading}
         lat={lat}
         lng={lng}
+        exploreContext={exploreContext}
       />
     </div>
   );
