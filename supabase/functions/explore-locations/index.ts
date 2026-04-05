@@ -20,33 +20,33 @@ serve(async (req) => {
       });
     }
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY not configured");
     }
 
     const prompt = `Given the query "${query}", return a JSON array of up to 10 real-world locations that are most relevant or associated with it. Each object must have: "name" (location name with country), "lat" (latitude number), "lng" (longitude number), "description" (one short sentence about why it's relevant). Return ONLY valid JSON array, no markdown, no explanation.`;
 
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.3 },
-        }),
-      }
-    );
+    const res = await fetch("https://ai.lovable.dev/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.3,
+      }),
+    });
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      throw new Error(`Gemini API error: ${errText}`);
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`AI API error: ${errText}`);
     }
 
-    const geminiData = await geminiRes.json();
-    const rawText =
-      geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+    const data = await res.json();
+    const rawText = data?.choices?.[0]?.message?.content || "[]";
 
     // Extract JSON array from response
     const jsonMatch = rawText.match(/\[[\s\S]*\]/);
