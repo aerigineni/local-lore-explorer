@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,49 +6,57 @@
 
 @layer base {
   :root {
-    --background: 220 25% 6%;
-    --foreground: 210 20% 95%;
+    --background: 36 30% 90%;
+    --foreground: 25 40% 15%;
 
-    --card: 220 22% 10%;
-    --card-foreground: 210 20% 95%;
+    --card: 38 35% 88%;
+    --card-foreground: 25 40% 15%;
 
-    --popover: 220 22% 10%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 38 35% 88%;
+    --popover-foreground: 25 40% 15%;
 
-    --primary: 200 90% 55%;
-    --primary-foreground: 220 25% 6%;
+    --primary: 25 55% 35%;
+    --primary-foreground: 40 30% 95%;
 
-    --secondary: 220 20% 15%;
-    --secondary-foreground: 210 15% 80%;
+    --secondary: 36 20% 78%;
+    --secondary-foreground: 25 35% 25%;
 
-    --muted: 220 18% 13%;
-    --muted-foreground: 215 12% 50%;
+    --muted: 36 22% 82%;
+    --muted-foreground: 25 18% 45%;
 
-    --accent: 160 65% 45%;
-    --accent-foreground: 220 25% 6%;
+    --accent: 145 30% 35%;
+    --accent-foreground: 40 30% 95%;
 
-    --destructive: 0 80% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 55% 45%;
+    --destructive-foreground: 40 30% 95%;
 
-    --border: 220 18% 16%;
-    --input: 220 18% 16%;
-    --ring: 200 90% 55%;
+    --border: 30 25% 72%;
+    --input: 30 25% 72%;
+    --ring: 25 55% 35%;
 
-    --radius: 0.75rem;
+    --radius: 0.25rem;
 
-    --sidebar-background: 220 22% 8%;
-    --sidebar-foreground: 210 15% 80%;
-    --sidebar-primary: 200 90% 55%;
-    --sidebar-primary-foreground: 220 25% 6%;
-    --sidebar-accent: 220 18% 13%;
-    --sidebar-accent-foreground: 210 15% 80%;
-    --sidebar-border: 220 18% 15%;
-    --sidebar-ring: 200 90% 55%;
+    --sidebar-background: 38 32% 86%;
+    --sidebar-foreground: 25 35% 25%;
+    --sidebar-primary: 25 55% 35%;
+    --sidebar-primary-foreground: 40 30% 95%;
+    --sidebar-accent: 36 22% 80%;
+    --sidebar-accent-foreground: 25 35% 25%;
+    --sidebar-border: 30 25% 72%;
+    --sidebar-ring: 25 55% 35%;
 
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'IM Fell English', serif;
+    --font-body: 'Crimson Text', serif;
 
     --panel-width: 560px;
+
+    /* Journal-specific tokens */
+    --journal-ink: 25 40% 15%;
+    --journal-parchment: 38 40% 91%;
+    --journal-aged: 32 30% 82%;
+    --bookmark-red: 0 60% 42%;
+    --bookmark-green: 145 40% 32%;
+    --bookmark-blue: 210 35% 40%;
   }
 }
 
@@ -67,14 +75,29 @@
   }
 }
 
+/* Parchment texture overlay */
+.journal-texture {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, hsl(36 35% 88% / 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, hsl(30 30% 80% / 0.3) 0%, transparent 50%);
+}
+
+/* Bookmark tab base */
+.bookmark-tab {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.05em;
+  box-shadow: 2px 2px 4px hsl(25 30% 20% / 0.15);
+}
+
 .leaflet-container {
-  background: hsl(210 30% 93%) !important;
+  background: hsl(36 30% 88%) !important;
   width: 100%;
   height: 100%;
 }
 
 .leaflet-tile-pane {
-  filter: none;
+  filter: sepia(15%) saturate(85%);
 }
 
 .leaflet-control-zoom {
@@ -82,18 +105,20 @@
 }
 
 .leaflet-control-zoom a {
-  background: hsl(220 22% 10% / 0.9) !important;
-  color: hsl(210 20% 95%) !important;
-  border: 1px solid hsl(220 18% 16%) !important;
+  background: hsl(38 35% 88% / 0.95) !important;
+  color: hsl(25 40% 15%) !important;
+  border: 1px solid hsl(30 25% 72%) !important;
   backdrop-filter: blur(8px);
+  font-family: var(--font-display) !important;
 }
 
 .leaflet-control-attribution {
-  background: hsl(220 22% 10% / 0.7) !important;
-  color: hsl(215 12% 50%) !important;
+  background: hsl(38 35% 88% / 0.85) !important;
+  color: hsl(25 18% 45%) !important;
   font-size: 10px !important;
+  font-family: var(--font-body) !important;
 }
 
 .leaflet-control-attribution a {
-  color: hsl(200 90% 55%) !important;
+  color: hsl(25 55% 35%) !important;
 }
