@@ -141,7 +141,7 @@
 }
 
 .leaflet-tile-pane {
-  filter: none;
+  filter: sepia(15%) saturate(85%);
 }
 
 .leaflet-control-zoom {

@@ -169,6 +169,7 @@ const Index = () => {
       <ExploreSidebar
         ref={exploreRef}
         isOpen={exploreOpen}
+        hidden={sidebarOpen}
         onToggle={() => { setExploreOpen((o) => !o); setSidebarOpen(false); }}
         onSelect={handleExploreSelect}
         onResults={handleExploreResults}
@@ -216,7 +217,7 @@ const Index = () => {
                 onChange={(e) => setTopSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
-                placeholder="Where does your curiosity lead you?"
+                placeholder="Chart a course across the world..."
                 className="w-full h-10 pl-4 pr-10 rounded bg-card/90 border-2 border-border text-sm font-body text-foreground placeholder:text-muted-foreground/60 placeholder:italic focus:outline-none focus:border-primary/60 backdrop-blur-sm transition-all duration-300"
                 style={{
                   boxShadow: searchFocused
