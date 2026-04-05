@@ -52,7 +52,7 @@ serve(async (req) => {
     const jsonMatch = rawText.match(/\[[\s\S]*\]/);
     const locations = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
 
-    return new Response(JSON.stringify({ locations: locations.slice(0, 10) }), {
+    return new Response(JSON.stringify({ locations: locations.slice(0, 15) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
