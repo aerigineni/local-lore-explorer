@@ -194,8 +194,8 @@ const Index = () => {
 
       {/* Top bar */}
       <div className="fixed top-0 left-0 right-0 z-[999] pointer-events-none">
-        <div className="flex items-center justify-between p-4 md:p-6 gap-3">
-          <div className="flex items-center gap-3 pointer-events-auto ml-14">
+        <div className="flex items-center p-4 md:p-6 gap-3">
+          <div className="flex items-center gap-3 pointer-events-auto ml-14 shrink-0">
             <div className="w-10 h-10 rounded bg-card/90 border-2 border-border flex items-center justify-center"
                  style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.15)" }}>
               <Compass className="w-5 h-5 text-primary" />
@@ -209,13 +209,12 @@ const Index = () => {
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Search bar */}
+        {/* Search bar centered on screen */}
+        <div className="absolute top-4 md:top-6 left-1/2 -translate-x-1/2 pointer-events-auto w-full max-w-md px-4">
           <motion.form
-            className="pointer-events-auto flex-1 max-w-md mr-auto ml-4"
-            animate={{
-              scale: searchFocused ? 1.03 : 1,
-            }}
+            animate={{ scale: searchFocused ? 1.03 : 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onSubmit={(e) => {
               e.preventDefault();
@@ -251,8 +250,6 @@ const Index = () => {
               </button>
             </div>
           </motion.form>
-
-          <div className="w-10 shrink-0" />
         </div>
       </div>
 
