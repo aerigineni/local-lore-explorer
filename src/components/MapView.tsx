@@ -45,6 +45,9 @@ function MapController({ mapRef }: { mapRef: React.Ref<MapViewHandle> }) {
     resetView: () => {
       map.flyTo([20, 0], 3, { duration: 1.5 });
     },
+    flyTo: (lat: number, lng: number, zoom?: number) => {
+      map.flyTo([lat, lng], zoom ?? Math.max(map.getZoom(), 6), { duration: 1.2 });
+    },
   }));
   return null;
 }
