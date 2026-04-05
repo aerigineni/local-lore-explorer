@@ -216,6 +216,8 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
       </AnimatePresence>
     </>
   );
-};
+});
+
+ExploreSidebar.displayName = "ExploreSidebar";
 
 export default ExploreSidebar;
