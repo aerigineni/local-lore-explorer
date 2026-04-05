@@ -234,6 +234,29 @@ const ExploreSidebar = forwardRef<ExploreSidebarHandle, ExploreSidebarProps>(({ 
                       </div>
                     );
                   })}
+                  {/* See more button */}
+                  {results.length >= 5 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLoadMore();
+                      }}
+                      disabled={isLoadingMore}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-body italic text-primary hover:text-foreground transition-colors border-t border-border/40"
+                    >
+                      {isLoadingMore ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Discovering more...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-3.5 h-3.5" />
+                          <span>Discover more destinations</span>
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
