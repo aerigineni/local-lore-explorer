@@ -1,6 +1,7 @@
-import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { forwardRef, useImperativeHandle } from "react";
 
 interface MapMarker {
   lat: number;
@@ -14,7 +15,10 @@ interface MapViewProps {
   onMarkerClick?: (marker: MapMarker) => void;
 }
 
-// Red pin icon
+export interface MapViewHandle {
+  resetView: () => void;
+}
+
 const redIcon = new L.Icon({
   iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
@@ -34,7 +38,17 @@ function ClickHandler({ onLocationClick }: { onLocationClick: (lat: number, lng:
   return null;
 }
 
-const MapView = ({ onLocationClick, markers = [], onMarkerClick }: MapViewProps) => {
+function MapController({ mapRef }: { mapRef: React.Ref<MapViewHandle> }) {
+  const map = useMap();
+  useImperativeHandle(mapRef, () => ({
+    resetView: () => {
+      map.flyTo([20, 0], 3, { duration: 1.5 });
+    },
+  }));
+  return null;
+}
+
+const MapView = forwardRef<MapViewHandle, MapViewProps>(({ onLocationClick, markers = [], onMarkerClick }, ref) => {
   return (
     <MapContainer
       center={[20, 0]}
@@ -49,6 +63,7 @@ const MapView = ({ onLocationClick, markers = [], onMarkerClick }: MapViewProps)
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
       <ClickHandler onLocationClick={onLocationClick} />
+      <MapController mapRef={ref} />
       {markers.map((m, i) => (
         <Marker
           key={`${m.name}-${i}`}
@@ -63,6 +78,8 @@ const MapView = ({ onLocationClick, markers = [], onMarkerClick }: MapViewProps)
       ))}
     </MapContainer>
   );
-};
+});
+
+MapView.displayName = "MapView";
 
 export default MapView;
