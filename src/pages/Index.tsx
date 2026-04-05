@@ -144,6 +144,7 @@ const Index = () => {
   }, [handleLocationClick]);
 
   const handleExploreSelect = useCallback((location: ExploreLocation, searchQuery: string) => {
+    mapRef.current?.flyTo(location.lat, location.lng);
     handleLocationClick(location.lat, location.lng, searchQuery || undefined);
   }, [handleLocationClick]);
 
