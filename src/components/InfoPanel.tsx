@@ -17,12 +17,12 @@ interface InfoPanelProps {
 }
 
 const tabs = [
-  { key: "history", icon: Landmark, label: "History", color: "from-amber-500/20 to-amber-600/5" },
-  { key: "food", icon: Utensils, label: "Food", color: "from-orange-500/20 to-orange-600/5" },
-  { key: "culture", icon: Music, label: "Culture", color: "from-purple-500/20 to-purple-600/5" },
-  { key: "stories", icon: BookOpen, label: "Stories", color: "from-emerald-500/20 to-emerald-600/5" },
-  { key: "news", icon: Newspaper, label: "News", color: "from-blue-500/20 to-blue-600/5" },
-  { key: "issues", icon: AlertTriangle, label: "Issues", color: "from-red-500/20 to-red-600/5" },
+  { key: "history", icon: Landmark, label: "History" },
+  { key: "food", icon: Utensils, label: "Food" },
+  { key: "culture", icon: Music, label: "Culture" },
+  { key: "stories", icon: BookOpen, label: "Stories" },
+  { key: "news", icon: Newspaper, label: "News" },
+  { key: "issues", icon: AlertTriangle, label: "Issues" },
 ];
 
 function parseSections(content: string): Record<string, string> {
@@ -75,14 +75,13 @@ function parseSections(content: string): Record<string, string> {
   return sections;
 }
 
-/** Render a line of text, converting **bold** markers into <strong> tags. */
 function RichLine({ text }: { text: string }) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return (
     <>
       {parts.map((part, i) =>
         part.startsWith("**") && part.endsWith("**") ? (
-          <strong key={i} className="text-gray-900 font-semibold">
+          <strong key={i} className="text-foreground font-bold">
             {part.slice(2, -2)}
           </strong>
         ) : (
@@ -93,7 +92,6 @@ function RichLine({ text }: { text: string }) {
   );
 }
 
-/** Render markdown-ish content into styled paragraphs and bullet lists. */
 function RichContent({ text }: { text: string }) {
   const lines = text.split("\n").filter((l) => l.trim());
   const elements: JSX.Element[] = [];
@@ -104,8 +102,8 @@ function RichContent({ text }: { text: string }) {
     elements.push(
       <ul key={`ul-${elements.length}`} className="space-y-1.5 my-2">
         {bulletBuffer.map((b, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-gray-800 leading-relaxed">
-            <ChevronRight className="w-3.5 h-3.5 mt-1 shrink-0 text-primary/70" />
+          <li key={i} className="flex items-start gap-2 text-sm text-foreground/85 leading-relaxed font-reading">
+            <ChevronRight className="w-3.5 h-3.5 mt-1 shrink-0 text-primary/60" />
             <span><RichLine text={b} /></span>
           </li>
         ))}
@@ -121,7 +119,7 @@ function RichContent({ text }: { text: string }) {
     } else {
       flushBullets();
       elements.push(
-        <p key={`p-${elements.length}`} className="text-sm text-gray-800 leading-relaxed">
+        <p key={`p-${elements.length}`} className="text-sm text-foreground/85 leading-relaxed font-reading">
           <RichLine text={line} />
         </p>
       );
@@ -161,7 +159,8 @@ const InfoPanel = ({
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 220 }}
-          className="fixed top-0 right-0 h-full w-full max-w-[var(--panel-width)] bg-white backdrop-blur-2xl border-l border-gray-200 z-[1000] flex flex-col shadow-2xl"
+          className="fixed top-0 right-0 h-full w-full max-w-[var(--panel-width)] bg-card journal-texture border-l-2 border-border z-[1000] flex flex-col"
+          style={{ boxShadow: "-4px 0 15px hsl(25 30% 20% / 0.15)" }}
         >
           {/* ─── Hero Image ─── */}
           <div className="relative w-full h-48 shrink-0 overflow-hidden bg-muted">
@@ -170,6 +169,7 @@ const InfoPanel = ({
                 src={imageUrl}
                 alt={locationName || "Location"}
                 className="w-full h-full object-cover"
+                style={{ filter: "sepia(10%) contrast(95%)" }}
                 onError={() => setImgError(true)}
               />
             ) : (
@@ -177,22 +177,19 @@ const InfoPanel = ({
                 <ImageOff className="w-10 h-10 text-muted-foreground/40" />
               </div>
             )}
-            {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent" />
 
-            {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-3 right-3 p-2 rounded-full bg-card/70 backdrop-blur-md border border-border/50 text-muted-foreground hover:text-foreground hover:bg-card transition-all"
+              className="absolute top-3 right-3 p-2 rounded bg-card/80 border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-all"
             >
               <X className="w-4 h-4" />
             </button>
 
-            {/* Location info overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-5">
               <div className="flex items-center gap-1.5 text-primary/90 mb-1">
                 <MapPin className="w-3.5 h-3.5" />
-                <span className="text-[11px] font-body uppercase tracking-wider font-medium">
+                <span className="text-xs font-body uppercase tracking-wider font-semibold">
                   {lat?.toFixed(4)}, {lng?.toFixed(4)}
                 </span>
               </div>
@@ -207,17 +204,17 @@ const InfoPanel = ({
           </div>
 
           {/* ─── Tabs ─── */}
-          <div className="flex flex-wrap gap-1.5 px-4 py-3 border-b border-gray-200 shrink-0">
+          <div className="flex flex-wrap gap-1.5 px-4 py-3 border-b border-border shrink-0">
             {tabs.map(({ key, icon: Icon, label }) => {
               const isActive = activeTab === key;
               return (
                 <button
                   key={key}
                   onClick={() => setActiveTab(key)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-body font-medium whitespace-nowrap transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-display tracking-wide whitespace-nowrap transition-all duration-200 ${
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "bg-secondary/60 text-secondary-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -231,16 +228,14 @@ const InfoPanel = ({
           <div className="flex-1 overflow-y-auto">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center h-full gap-4 px-6">
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Loader2 className="w-7 h-7 animate-spin text-primary" />
-                  </div>
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Loader2 className="w-7 h-7 animate-spin text-primary" />
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-800 font-body text-sm font-medium">
-                    Exploring this place…
+                  <p className="text-foreground font-display text-base">
+                    Consulting the archives…
                   </p>
-                  <p className="text-gray-500 font-body text-xs mt-1">
+                  <p className="text-muted-foreground font-body text-sm italic mt-1">
                     Gathering history, culture & stories
                   </p>
                 </div>
@@ -253,17 +248,16 @@ const InfoPanel = ({
                 transition={{ duration: 0.2 }}
                 className="p-5"
               >
-                {/* Section header card */}
-                <div className={`rounded-xl bg-gradient-to-r ${activeTabMeta.color} border border-gray-200 p-4 mb-4`}>
+                <div className="rounded border border-border bg-secondary/30 p-4 mb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-card/80 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded bg-primary/15 flex items-center justify-center">
                       <activeTabMeta.icon className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-display text-base font-bold text-gray-900">
+                      <h3 className="font-display text-base font-bold text-foreground">
                         {activeTabMeta.label}
                       </h3>
-                      <p className="text-[11px] text-gray-500 font-body">
+                      <p className="text-xs text-muted-foreground font-body italic">
                         {locationName}
                       </p>
                     </div>
@@ -273,22 +267,22 @@ const InfoPanel = ({
                 <RichContent text={activeContent} />
               </motion.div>
             ) : content ? (
-              <div className="flex flex-col items-center justify-center h-full gap-3 text-gray-500 text-sm px-6">
-                <activeTabMeta.icon className="w-8 h-8 text-gray-300" />
-                <p className="text-center">
-                  No {activeTabMeta.label.toLowerCase()} information available for this location.
+              <div className="flex flex-col items-center justify-center h-full gap-3 text-muted-foreground text-sm px-6">
+                <activeTabMeta.icon className="w-8 h-8 text-muted-foreground/30" />
+                <p className="text-center font-body italic">
+                  No {activeTabMeta.label.toLowerCase()} entries found for this destination.
                 </p>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-                Click anywhere on the map to explore
+              <div className="flex items-center justify-center h-full text-muted-foreground text-sm font-body italic">
+                Click anywhere on the map to begin exploring
               </div>
             )}
           </div>
 
           {/* ─── Footer ─── */}
-          <div className="px-5 py-3 border-t border-gray-200 shrink-0">
-            <p className="text-[11px] text-gray-400 font-body text-center">
+          <div className="px-5 py-3 border-t border-border shrink-0">
+            <p className="text-xs text-muted-foreground font-body italic text-center">
               Powered by AI · Images via Wikipedia
             </p>
           </div>

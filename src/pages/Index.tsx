@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Globe, Compass } from "lucide-react";
+import { Compass } from "lucide-react";
 import MapView from "@/components/MapView";
 import InfoPanel from "@/components/InfoPanel";
 import SearchHistorySidebar from "@/components/SearchHistorySidebar";
@@ -136,28 +136,30 @@ const Index = () => {
         onResults={handleExploreResults}
       />
 
-      {/* Top bar */}
+      {/* Top bar — Journal title */}
       <div className="fixed top-0 left-0 right-0 z-[999] pointer-events-none">
         <div className="flex items-center justify-between p-4 md:p-6">
-          <div className="flex items-center gap-3 pointer-events-auto" style={{ marginLeft: "3.5rem" }}>
-            <div className="w-10 h-10 rounded-xl bg-card/80 backdrop-blur-lg border border-border flex items-center justify-center">
-              <Globe className="w-5 h-5 text-primary" />
+          <div className="flex items-center gap-3 pointer-events-auto ml-14">
+            <div className="w-10 h-10 rounded bg-card/90 border-2 border-border flex items-center justify-center"
+                 style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.15)" }}>
+              <Compass className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h1 className="font-display text-lg font-bold text-black drop-shadow-lg">
+              <h1 className="font-display text-xl font-bold text-foreground drop-shadow-md tracking-wide">
                 WorldTour
               </h1>
-              <p className="text-xs text-muted-foreground font-body drop-shadow-md">
-                Click anywhere to discover
+              <p className="text-xs text-muted-foreground font-body italic drop-shadow-sm">
+                A traveller's journal
               </p>
             </div>
           </div>
 
           {!panelOpen && (
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/80 backdrop-blur-lg border border-border pointer-events-auto">
+            <div className="flex items-center gap-2 px-4 py-2 rounded bg-card/90 border-2 border-border pointer-events-auto"
+                 style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.12)" }}>
               <Compass className="w-4 h-4 text-primary animate-pulse" />
-              <span className="text-xs font-body text-secondary-foreground">
-                Tap a location to explore its story
+              <span className="text-xs font-body italic text-secondary-foreground">
+                Tap anywhere to begin your journey
               </span>
             </div>
           )}

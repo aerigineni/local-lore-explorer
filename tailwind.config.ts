@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        body: ["DM Sans", "sans-serif"],
+        display: ["IM Fell English", "serif"],
+        body: ["Crimson Text", "serif"],
+        reading: ["Lora", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -60,6 +61,16 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        journal: {
+          ink: "hsl(var(--journal-ink))",
+          parchment: "hsl(var(--journal-parchment))",
+          aged: "hsl(var(--journal-aged))",
+        },
+        bookmark: {
+          red: "hsl(var(--bookmark-red))",
+          green: "hsl(var(--bookmark-green))",
+          blue: "hsl(var(--bookmark-blue))",
         },
       },
       borderRadius: {
