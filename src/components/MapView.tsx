@@ -45,8 +45,12 @@ const MapView = ({ onLocationClick, markers = [], onMarkerClick }: MapViewProps)
       zoomControl={true}
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://stamen.com">Stamen Design</a>'
+        url="https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg"
+      />
+      <TileLayer
+        attribution='&copy; <a href="https://stamen.com">Stamen Design</a>'
+        url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
       />
       <ClickHandler onLocationClick={onLocationClick} />
       {markers.map((m, i) => (

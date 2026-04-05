@@ -90,6 +90,50 @@
   box-shadow: 2px 2px 4px hsl(25 30% 20% / 0.15);
 }
 
+/* Wax seal button */
+.wax-seal {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, hsl(0 55% 50%), hsl(0 60% 38%) 60%, hsl(0 50% 28%));
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 2px 8px hsl(0 40% 20% / 0.4),
+    inset 0 1px 2px hsl(0 60% 65% / 0.3),
+    inset 0 -2px 4px hsl(0 50% 20% / 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.wax-seal::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1.5px solid hsl(0 40% 55% / 0.4);
+}
+
+.wax-seal:hover:not(:disabled) {
+  transform: scale(1.08);
+  box-shadow:
+    0 4px 14px hsl(0 40% 20% / 0.5),
+    inset 0 1px 2px hsl(0 60% 65% / 0.3),
+    inset 0 -2px 4px hsl(0 50% 20% / 0.3);
+}
+
+.wax-seal:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.wax-seal:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .leaflet-container {
   background: hsl(36 30% 88%) !important;
   width: 100%;
@@ -97,7 +141,7 @@
 }
 
 .leaflet-tile-pane {
-  filter: sepia(15%) saturate(85%);
+  filter: none;
 }
 
 .leaflet-control-zoom {
