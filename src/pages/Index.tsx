@@ -311,7 +311,7 @@ const Index = () => {
                 </p>
               </div>
               <p className="mt-4 text-xs font-body italic text-muted-foreground text-center">
-                The world is a book — start turning its pages.
+                A traveller's journal.
               </p>
             </motion.div>
           </motion.div>

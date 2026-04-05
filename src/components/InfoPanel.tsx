@@ -130,7 +130,7 @@ const InfoPanel = ({
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 220 }}
-          className="fixed top-16 right-0 bottom-6 w-full max-w-[var(--panel-width)] bg-card journal-texture border-l-2 border-t-2 border-b-2 border-border rounded-l-xl z-[1000] flex flex-col"
+          className="fixed top-20 right-0 bottom-10 w-full max-w-[var(--panel-width)] bg-card journal-texture border-l-2 border-t-2 border-b-2 border-border rounded-l-xl z-[1000] flex flex-col"
           style={{ boxShadow: "-4px 0 15px hsl(25 30% 20% / 0.15)" }}
         >
           {/* Header */}
