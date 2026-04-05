@@ -66,7 +66,8 @@ const Index = () => {
     try {
       let geoData: any = null;
 
-      for (const zoom of [10, 6, 3]) {
+      // Try progressively wider zoom levels to always find a named place
+      for (const zoom of [10, 8, 6, 4, 3, 1]) {
         const geoRes = await fetch(
           `https://nominatim.openstreetmap.org/reverse?lat=${clickLat}&lon=${clickLng}&format=json&zoom=${zoom}&accept-language=en`
         );
@@ -74,20 +75,28 @@ const Index = () => {
         const nextGeoData = await geoRes.json();
         if (!nextGeoData?.error) {
           geoData = nextGeoData;
-          break;
+          // If we got a real place name (not just coordinates), use it
+          const hasName = nextGeoData?.name ||
+            nextGeoData?.address?.city ||
+            nextGeoData?.address?.town ||
+            nextGeoData?.address?.village ||
+            nextGeoData?.address?.county ||
+            nextGeoData?.address?.state ||
+            nextGeoData?.address?.country;
+          if (hasName) break;
         }
       }
 
       const name =
-        geoData?.name ||
         geoData?.address?.city ||
         geoData?.address?.town ||
         geoData?.address?.village ||
         geoData?.address?.county ||
         geoData?.address?.state ||
         geoData?.address?.country ||
+        geoData?.name ||
         geoData?.display_name?.split(",").slice(0, 2).join(",").trim() ||
-        `Remote area near ${fallbackLocationName}`;
+        fallbackLocationName;
 
       const country = geoData?.address?.country || "";
       const fullName = country && name !== country ? `${name}, ${country}` : name;
