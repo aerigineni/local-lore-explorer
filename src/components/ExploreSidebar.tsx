@@ -22,6 +22,7 @@ const ExploreSidebar = ({ isOpen, onToggle, onSelect, onResults }: ExploreSideba
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ExploreLocation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const handleSearch = async () => {
     const trimmed = query.trim();
