@@ -323,7 +323,6 @@ const Index = () => {
         onClose={() => setPanelOpen(false)}
         locationName={locationName}
         content={content}
-        imageUrl={imageUrl}
         isLoading={isLoading}
         lat={lat}
         lng={lng}

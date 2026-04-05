@@ -1,16 +1,15 @@
 import {
   X, MapPin, Loader2, Utensils, Landmark, Music,
-  BookOpen, Newspaper, AlertTriangle, ChevronRight, ImageOff,
+  BookOpen, Newspaper, AlertTriangle, ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo, useEffect, Fragment } from "react";
+import { useState, useMemo, Fragment } from "react";
 
 interface InfoPanelProps {
   isOpen: boolean;
   onClose: () => void;
   locationName: string | null;
   content: string | null;
-  imageUrl: string | null;
   isLoading: boolean;
   lat: number | null;
   lng: number | null;
@@ -135,17 +134,11 @@ const InfoPanel = ({
   onClose,
   locationName,
   content,
-  imageUrl,
   isLoading,
   lat,
   lng,
 }: InfoPanelProps) => {
   const [activeTab, setActiveTab] = useState("history");
-  const [imgError, setImgError] = useState(false);
-
-  useEffect(() => {
-    setImgError(false);
-  }, [imageUrl]);
 
   const sections = useMemo(() => (content ? parseSections(content) : {}), [content]);
   const activeContent = sections[activeTab];
@@ -154,139 +147,116 @@ const InfoPanel = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ x: "100%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "100%", opacity: 0 }}
-          transition={{ type: "spring", damping: 28, stiffness: 220 }}
-          className="fixed top-0 right-0 h-full w-full max-w-[var(--panel-width)] bg-card journal-texture border-l-2 border-border z-[1000] flex flex-col"
-          style={{ boxShadow: "-4px 0 15px hsl(25 30% 20% / 0.15)" }}
-        >
-          {/* ─── Hero Image ─── */}
-          <div className="relative w-full h-48 shrink-0 overflow-hidden bg-muted">
-            {imageUrl && !imgError ? (
-              <img
-                src={imageUrl}
-                alt={locationName || "Location"}
-                className="w-full h-full object-cover"
-                style={{ filter: "sepia(10%) contrast(95%)" }}
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 via-accent/10 to-muted flex items-center justify-center">
-                <ImageOff className="w-10 h-10 text-muted-foreground/40" />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent" />
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999]"
+            onClick={onClose}
+          />
 
-            <button
-              onClick={onClose}
-              className="absolute top-3 right-3 p-2 rounded bg-card/80 border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="absolute bottom-0 left-0 right-0 p-5">
-              <div className="flex items-center gap-1.5 text-primary/90 mb-1">
-                <MapPin className="w-3.5 h-3.5" />
-                <span className="text-xs font-body uppercase tracking-wider font-semibold">
-                  {lat?.toFixed(4)}, {lng?.toFixed(4)}
-                </span>
-              </div>
-              <h2 className="font-display text-xl md:text-2xl font-bold text-foreground leading-tight">
-                {locationName || (
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" /> Finding location…
-                  </span>
-                )}
-              </h2>
-            </div>
-          </div>
-
-          {/* ─── Tabs ─── */}
-          <div className="flex flex-wrap gap-1.5 px-4 py-3 border-b border-border shrink-0">
-            {tabs.map(({ key, icon: Icon, label }) => {
-              const isActive = activeTab === key;
-              return (
-                <button
-                  key={key}
-                  onClick={() => setActiveTab(key)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-display tracking-wide whitespace-nowrap transition-all duration-200 ${
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "bg-secondary/60 text-secondary-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* ─── Content ─── */}
-          <div className="flex-1 overflow-y-auto">
-            {isLoading ? (
-              <div className="flex flex-col items-center justify-center h-full gap-4 px-6">
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Loader2 className="w-7 h-7 animate-spin text-primary" />
-                </div>
-                <div className="text-center">
-                  <p className="text-foreground font-display text-base">
-                    Consulting the archives…
-                  </p>
-                  <p className="text-muted-foreground font-body text-sm italic mt-1">
-                    Gathering history, culture & stories
-                  </p>
-                </div>
-              </div>
-            ) : activeContent ? (
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-                className="p-5"
-              >
-                <div className="rounded border border-border bg-secondary/30 p-4 mb-4">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded bg-primary/15 flex items-center justify-center">
-                      <activeTabMeta.icon className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-base font-bold text-foreground">
-                        {activeTabMeta.label}
-                      </h3>
-                      <p className="text-xs text-muted-foreground font-body italic">
-                        {locationName}
-                      </p>
-                    </div>
+          {/* Bottom sheet */}
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 260 }}
+            className="fixed bottom-0 left-0 right-0 z-[1000] max-h-[55vh] bg-card journal-texture border-t-2 border-border rounded-t-2xl flex flex-col"
+            style={{ boxShadow: "0 -4px 20px hsl(25 30% 20% / 0.2)" }}
+          >
+            {/* Drag handle + header */}
+            <div className="shrink-0 pt-2 pb-1 px-5">
+              <div className="w-10 h-1 rounded-full bg-border mx-auto mb-3" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 min-w-0">
+                  <MapPin className="w-4 h-4 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <h2 className="font-display text-lg font-bold text-foreground leading-tight truncate">
+                      {locationName || (
+                        <span className="flex items-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" /> Finding location…
+                        </span>
+                      )}
+                    </h2>
+                    <span className="text-xs text-muted-foreground font-body">
+                      {lat?.toFixed(4)}, {lng?.toFixed(4)}
+                    </span>
                   </div>
                 </div>
-
-                <RichContent text={activeContent} />
-              </motion.div>
-            ) : content ? (
-              <div className="flex flex-col items-center justify-center h-full gap-3 text-muted-foreground text-sm px-6">
-                <activeTabMeta.icon className="w-8 h-8 text-muted-foreground/30" />
-                <p className="text-center font-body italic">
-                  No {activeTabMeta.label.toLowerCase()} entries found for this destination.
-                </p>
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-full bg-secondary/60 border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-all shrink-0"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-            ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground text-sm font-body italic">
-                Click anywhere on the map to begin exploring
-              </div>
-            )}
-          </div>
+            </div>
 
-          {/* ─── Footer ─── */}
-          <div className="px-5 py-3 border-t border-border shrink-0">
-            <p className="text-xs text-muted-foreground font-body italic text-center">
-              Powered by AI · Images via Wikipedia
-            </p>
-          </div>
-        </motion.div>
+            {/* Tabs */}
+            <div className="flex flex-wrap gap-1.5 px-4 py-2.5 border-y border-border shrink-0">
+              {tabs.map(({ key, icon: Icon, label }) => {
+                const isActive = activeTab === key;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setActiveTab(key)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-display tracking-wide whitespace-nowrap transition-all duration-200 ${
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-secondary/60 text-secondary-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto">
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center py-10 gap-3 px-6">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  </div>
+                  <p className="text-foreground font-display text-sm">Consulting the archives…</p>
+                  <p className="text-muted-foreground font-body text-xs italic">Gathering history, culture & stories</p>
+                </div>
+              ) : activeContent ? (
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-5"
+                >
+                  <RichContent text={activeContent} />
+                </motion.div>
+              ) : content ? (
+                <div className="flex flex-col items-center justify-center py-10 gap-2 text-muted-foreground text-sm px-6">
+                  <activeTabMeta.icon className="w-7 h-7 text-muted-foreground/30" />
+                  <p className="text-center font-body italic">
+                    No {activeTabMeta.label.toLowerCase()} entries found for this destination.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center py-10 text-muted-foreground text-sm font-body italic">
+                  Click anywhere on the map to begin exploring
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-5 py-2 border-t border-border shrink-0">
+              <p className="text-xs text-muted-foreground font-body italic text-center">
+                Powered by AI · Tap the map to explore more
+              </p>
+            </div>
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );
