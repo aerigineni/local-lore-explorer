@@ -20,6 +20,8 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [exploreMarkers, setExploreMarkers] = useState<ExploreLocation[]>([]);
+  const [topSearchQuery, setTopSearchQuery] = useState("");
+  const exploreRef = useRef<ExploreSidebarHandle>(null);
 
   const { history, addEntry, clearHistory, removeEntry } = useSearchHistory();
 
