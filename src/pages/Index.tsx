@@ -210,9 +210,9 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Search bar with animation */}
+          {/* Search bar */}
           <motion.form
-            className="pointer-events-auto flex-1 max-w-md mx-auto"
+            className="pointer-events-auto flex-1 max-w-md mr-auto ml-4"
             animate={{
               scale: searchFocused ? 1.03 : 1,
             }}
