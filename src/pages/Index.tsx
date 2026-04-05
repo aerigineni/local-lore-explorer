@@ -192,65 +192,64 @@ const Index = () => {
         onResults={handleExploreResults}
       />
 
-      {/* Top bar */}
-      <div className="fixed top-0 left-0 right-0 z-[999] pointer-events-none">
-        <div className="flex items-center p-4 md:p-6 gap-3">
-          <div className="flex items-center gap-3 pointer-events-auto ml-14 shrink-0">
-            <div className="w-10 h-10 rounded bg-card/90 border-2 border-border flex items-center justify-center"
-                 style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.15)" }}>
-              <Compass className="w-5 h-5 text-primary" />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="font-display text-xl font-bold text-foreground drop-shadow-md tracking-wide">
-                WorldTour
-              </h1>
-              <p className="text-xs text-muted-foreground font-body italic drop-shadow-sm">
-                The world is a book, start turning its pages.
-              </p>
-            </div>
+      {/* Logo */}
+      <div className="fixed top-4 md:top-6 left-0 z-[999] pointer-events-none">
+        <div className="flex items-center gap-3 pointer-events-auto ml-14 p-0 md:px-2">
+          <div className="w-10 h-10 rounded bg-card/90 border-2 border-border flex items-center justify-center"
+               style={{ boxShadow: "2px 2px 6px hsl(25 30% 20% / 0.15)" }}>
+            <Compass className="w-5 h-5 text-primary" />
+          </div>
+          <div className="hidden sm:block">
+            <h1 className="font-display text-xl font-bold text-foreground drop-shadow-md tracking-wide">
+              WorldTour
+            </h1>
+            <p className="text-xs text-muted-foreground font-body italic drop-shadow-sm">
+              The world is a book, start turning its pages.
+            </p>
           </div>
         </div>
+      </div>
 
-        {/* Search bar centered on screen */}
-        <div className="absolute top-4 md:top-6 left-1/2 -translate-x-1/2 pointer-events-auto w-full max-w-md px-4">
-          <motion.form
-            animate={{ scale: searchFocused ? 1.03 : 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            onSubmit={(e) => {
-              e.preventDefault();
-              const q = topSearchQuery.trim();
-              if (!q) return;
-              setSidebarOpen(false);
-              if (!exploreOpen) setExploreOpen(true);
-              exploreRef.current?.setQueryAndSearch(q);
-              setLastExploreQuery(q);
-              setTopSearchQuery("");
-            }}
-          >
-            <div className="relative">
-              <input
-                type="text"
-                value={topSearchQuery}
-                onChange={(e) => setTopSearchQuery(e.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                placeholder="Search for anything to learn and visualize it"
-                className="w-full h-10 pl-4 pr-10 rounded bg-card/90 border-2 border-border text-sm font-body text-foreground placeholder:text-muted-foreground/60 placeholder:italic focus:outline-none focus:border-primary/60 backdrop-blur-sm transition-all duration-300"
-                style={{
-                  boxShadow: searchFocused
-                    ? "0 4px 20px hsl(25 55% 35% / 0.25), inset 0 1px 2px hsl(25 30% 20% / 0.08)"
-                    : "2px 2px 6px hsl(25 30% 20% / 0.12)",
-                }}
-              />
-              <button
-                type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded flex items-center justify-center text-primary hover:text-foreground transition-colors"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-            </div>
-          </motion.form>
-        </div>
+      {/* Search bar - true center of viewport */}
+      <div className="fixed top-4 md:top-6 inset-x-0 z-[999] flex justify-center pointer-events-none px-4">
+        <motion.form
+          className="pointer-events-auto w-full max-w-md"
+          animate={{ scale: searchFocused ? 1.03 : 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            const q = topSearchQuery.trim();
+            if (!q) return;
+            setSidebarOpen(false);
+            if (!exploreOpen) setExploreOpen(true);
+            exploreRef.current?.setQueryAndSearch(q);
+            setLastExploreQuery(q);
+            setTopSearchQuery("");
+          }}
+        >
+          <div className="relative">
+            <input
+              type="text"
+              value={topSearchQuery}
+              onChange={(e) => setTopSearchQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              placeholder="Search for anything to learn and visualize it"
+              className="w-full h-10 pl-4 pr-10 rounded bg-card/90 border-2 border-border text-sm font-body text-foreground placeholder:text-muted-foreground/60 placeholder:italic focus:outline-none focus:border-primary/60 backdrop-blur-sm transition-all duration-300"
+              style={{
+                boxShadow: searchFocused
+                  ? "0 4px 20px hsl(25 55% 35% / 0.25), inset 0 1px 2px hsl(25 30% 20% / 0.08)"
+                  : "2px 2px 6px hsl(25 30% 20% / 0.12)",
+              }}
+            />
+            <button
+              type="submit"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded flex items-center justify-center text-primary hover:text-foreground transition-colors"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+          </div>
+        </motion.form>
       </div>
 
       {/* Bottom-left floating buttons */}
