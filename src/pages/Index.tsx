@@ -38,6 +38,7 @@ const Index = () => {
   const [locationName, setLocationName] = useState<string | null>(null);
   const [content, setContent] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [exploreContext, setExploreContext] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
