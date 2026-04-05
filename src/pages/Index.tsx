@@ -49,6 +49,7 @@ const Index = () => {
   const [isSurprising, setIsSurprising] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [lastExploreQuery, setLastExploreQuery] = useState("");
   const exploreRef = useRef<ExploreSidebarHandle>(null);
   const mapRef = useRef<MapViewHandle>(null);
 
